@@ -9,6 +9,24 @@ package_manager_apt_updated=0
 readonly LINUX_COMPAT_BIN_DIR="$HOME/.local/bin"
 readonly TLRC_GITHUB_REPOSITORY="tldr-pages/tlrc"
 
+user_local_command_path() {
+  local command_name="$1"
+  local local_command_path="$HOME/.local/bin/$command_name"
+
+  if command -v "$command_name" >/dev/null 2>&1; then
+    command -v "$command_name"
+    return 0
+  fi
+
+  if [[ -x "$local_command_path" ]]; then
+    printf '%s
+' "$local_command_path"
+    return 0
+  fi
+
+  return 1
+}
+
 is_macos() {
   case "${OSTYPE:-}" in
     darwin*) return 0 ;;
@@ -137,9 +155,10 @@ ensure_linux_command_compatibility() {
 package_installed() {
   local tool_name="$1"
   local package_name
+  local resolved_command_path
 
   if [[ "$tool_name" == "mise" ]]; then
-    command -v mise >/dev/null 2>&1
+    user_local_command_path mise >/dev/null 2>&1
     return $?
   fi
 
@@ -148,9 +167,9 @@ package_installed() {
       return 0
     fi
 
-    if command -v mise >/dev/null 2>&1; then
+    if resolved_command_path=$(user_local_command_path mise 2>/dev/null); then
       local node_bin_dir
-      node_bin_dir=$(dirname "$(mise which node 2>/dev/null)")
+      node_bin_dir=$(dirname "$("$resolved_command_path" which node 2>/dev/null)")
       if [[ -n "$node_bin_dir" && -x "$node_bin_dir/pnpm" ]]; then
         return 0
       fi
@@ -183,10 +202,11 @@ package_available() {
 install_package() {
   local tool_name="$1"
   local package_name
+  local resolved_command_path
 
   if [[ "$tool_name" == "mise" ]]; then
-    if command -v mise >/dev/null 2>&1; then
-      printf 'mise is already available on the system at %s.\n' "$(command -v mise)"
+    if resolved_command_path=$(user_local_command_path mise 2>/dev/null); then
+      printf 'mise is already available on the system at %s.\n' "$resolved_command_path"
       return 0
     fi
 
@@ -212,16 +232,16 @@ install_package() {
       return 0
     fi
 
-    if ! command -v mise >/dev/null 2>&1; then
+    if ! resolved_command_path=$(user_local_command_path mise 2>/dev/null); then
       printf 'pnpm requires mise-managed Node.js in this Ubuntu setup.\n' >&2
       exit 1
     fi
 
     printf 'pnpm is missing; installing it with npm through mise.\n'
-    mise exec node@lts -- npm install -g pnpm
+    "$resolved_command_path" exec node@lts -- npm install -g pnpm
 
     local node_bin_dir
-    node_bin_dir=$(dirname "$(mise which node)")
+    node_bin_dir=$(dirname "$("$resolved_command_path" which node)")
     export PATH="$node_bin_dir:$PATH"
     return 0
   fi
@@ -257,10 +277,11 @@ install_package() {
 print_package_status() {
   local tool_name="$1"
   local package_name
+  local resolved_command_path
 
   if [[ "$tool_name" == "mise" ]]; then
-    if command -v mise >/dev/null 2>&1; then
-      printf 'mise is installed at %s.\n' "$(command -v mise)"
+    if resolved_command_path=$(user_local_command_path mise 2>/dev/null); then
+      printf 'mise is installed at %s.\n' "$resolved_command_path"
       return 0
     fi
 
@@ -274,9 +295,9 @@ print_package_status() {
       return 0
     fi
 
-    if command -v mise >/dev/null 2>&1; then
+    if resolved_command_path=$(user_local_command_path mise 2>/dev/null); then
       local node_path node_bin_dir
-      node_path=$(mise which node 2>/dev/null || true)
+      node_path=$("$resolved_command_path" which node 2>/dev/null || true)
       if [[ -n "$node_path" ]]; then
         node_bin_dir=$(dirname "$node_path")
         if [[ -x "$node_bin_dir/pnpm" ]]; then
