@@ -1,0 +1,6 @@
+# Default settings from setuprig
+theme = TokyoNight
+background = 0e0e14
+font-family = "JetBrains Mono"
+font-size = 14
+background-opacity = 0.85
