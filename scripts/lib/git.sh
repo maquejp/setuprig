@@ -3,7 +3,7 @@
 git_lib_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 git_repo_root=$(cd -- "$git_lib_dir/../.." && pwd)
 
-readonly GIT_REQUIRED_FORMULAE=(
+readonly GIT_REQUIRED_PACKAGES=(
   "gh"
   "git-delta"
 )
@@ -18,28 +18,28 @@ git_available() {
 }
 
 ensure_git_installed() {
-  if homebrew_formula_installed "git"; then
-    printf 'Git is already installed via Homebrew.\n'
+  if package_installed "git"; then
+    printf 'Git is already installed via apt.\n'
     return 0
   fi
 
   if git_available; then
-    printf 'Git is already available on the system at %s. Skipping Homebrew installation.\n' "$(command -v git)"
+    printf 'Git is already available on the system at %s. Skipping package installation.\n' "$(command -v git)"
     return 0
   fi
 
-  printf 'Git is missing; installing it with Homebrew.\n'
-  ensure_homebrew_formula_installed "git"
+  printf 'Git is missing; installing it with apt.\n'
+  ensure_package_installed "git"
 }
 
 ensure_git_tooling_installed() {
   ensure_git_installed
-  ensure_homebrew_formulae_installed "${GIT_REQUIRED_FORMULAE[@]}"
+  ensure_packages_installed "${GIT_REQUIRED_PACKAGES[@]}"
 }
 
 print_git_status() {
-  if homebrew_formula_installed "git"; then
-    printf 'Git is installed via Homebrew.\n'
+  if package_installed "git"; then
+    printf 'Git is installed via apt.\n'
     return 0
   fi
 
@@ -54,7 +54,7 @@ print_git_status() {
 
 print_git_tooling_status() {
   print_git_status || return 1
-  print_homebrew_formulae_status "${GIT_REQUIRED_FORMULAE[@]}"
+  print_packages_status "${GIT_REQUIRED_PACKAGES[@]}"
   printf 'Git tooling is ready.\n'
 }
 

@@ -1,7 +1,3 @@
-if [[ -n "${HOMEBREW_PREFIX:-}" ]]; then
-	export PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH"
-fi
-
 eval "$(mise activate zsh)"
 
 

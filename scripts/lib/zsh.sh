@@ -3,7 +3,7 @@
 zsh_lib_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 zsh_repo_root=$(cd -- "$zsh_lib_dir/../.." && pwd)
 
-readonly ZSH_REQUIRED_FORMULAE=(
+readonly ZSH_REQUIRED_PACKAGES=(
   "mise"
   "zoxide"
   "eza"
@@ -80,13 +80,13 @@ ensure_zsh_allowed_shell() {
 }
 
 ensure_zsh_runtime_dependencies_installed() {
-  ensure_homebrew_formulae_installed "${ZSH_REQUIRED_FORMULAE[@]}"
+  ensure_packages_installed "${ZSH_REQUIRED_PACKAGES[@]}"
 }
 
 print_zsh_runtime_dependency_status() {
-  print_homebrew_formulae_status "${ZSH_REQUIRED_FORMULAE[@]}" || return 1
+  print_packages_status "${ZSH_REQUIRED_PACKAGES[@]}" || return 1
 
-  printf 'zsh runtime dependencies are installed via Homebrew.\n'
+  printf 'zsh runtime dependencies are installed.\n'
 }
 
 ensure_zsh_base_config_present() {

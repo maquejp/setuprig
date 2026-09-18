@@ -4,8 +4,8 @@ set -euo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck source=./scripts/lib/homebrew.sh
-source "$script_dir/scripts/lib/homebrew.sh"
+# shellcheck source=./scripts/lib/packages.sh
+source "$script_dir/scripts/lib/packages.sh"
 
 # shellcheck source=./scripts/lib/fonts.sh
 source "$script_dir/scripts/lib/fonts.sh"
@@ -36,10 +36,9 @@ usage() {
 Usage: bash setup.sh <step>
 
 Available steps:
-  homebrew   Ensure Homebrew is installed
   jetbrains-mono Ensure JetBrains Mono is installed
-  ghostty    Ensure Homebrew is installed, then install Ghostty
-  xcode-cli  Ensure Xcode Command Line Tools are installed
+  ghostty    Ensure Ghostty is installed and configured
+  build-tools Ensure build prerequisites are installed
   git        Ensure Git, GitHub CLI, and delta are installed and configured
   cli-tools  Ensure jq, yq, and tmux are installed
   runtimes   Ensure mise installs Node LTS and Python 3
@@ -53,34 +52,23 @@ Available steps:
 EOF
 }
 
-run_homebrew_step() {
-  ensure_homebrew_installed
-  print_homebrew_version
-}
-
 run_jetbrains_mono_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_jetbrains_mono_installed
   print_jetbrains_mono_status
 }
 
 run_ghostty_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_ghostty_installed
   apply_ghostty_base_settings
   print_ghostty_status
 }
 
-run_xcode_cli_step() {
+run_build_tools_step() {
   ensure_xcode_cli_installed
   print_xcode_cli_status
 }
 
 run_git_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_git_tooling_installed
   apply_git_configuration
@@ -89,16 +77,12 @@ run_git_step() {
 }
 
 run_cli_tools_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_default_cli_tools_installed
   print_default_cli_tools_status
 }
 
 run_runtimes_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_mise_installed
   apply_mise_configuration
@@ -107,8 +91,6 @@ run_runtimes_step() {
 }
 
 run_zsh_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_starship_installed
   ensure_zsh_runtime_dependencies_installed
   ensure_zsh_present
@@ -122,54 +104,39 @@ run_zsh_step() {
 }
 
 run_fzf_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_fzf_installed
   print_fzf_status
 }
 
 run_fd_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_fd_installed
   print_fd_status
 }
 
 run_direnv_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_direnv_installed
   print_direnv_status
 }
 
 run_tlrc_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_tlrc_installed
   print_tlrc_status
 }
 
 run_pnpm_step() {
-  ensure_homebrew_installed
-  setup_homebrew_environment
   ensure_xcode_cli_installed
   ensure_pnpm_installed
   print_pnpm_status
 }
 
 run_all_steps() {
-  run_homebrew_step
-
-  if is_macos; then
-    run_jetbrains_mono_step
-    run_ghostty_step
-  fi
-
-  run_xcode_cli_step
+  run_build_tools_step
+  run_jetbrains_mono_step
+  run_ghostty_step
   run_git_step
   run_cli_tools_step
   run_runtimes_step
@@ -185,17 +152,14 @@ main() {
   fi
 
   case "$1" in
-    homebrew)
-      run_homebrew_step
-      ;;
     jetbrains-mono)
       run_jetbrains_mono_step
       ;;
     ghostty)
       run_ghostty_step
       ;;
-    xcode-cli)
-      run_xcode_cli_step
+    build-tools)
+      run_build_tools_step
       ;;
     git)
       run_git_step

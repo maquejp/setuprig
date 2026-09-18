@@ -3,17 +3,17 @@
 starship_lib_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 starship_repo_root=$(cd -- "$starship_lib_dir/../.." && pwd)
 
-readonly STARSHIP_FORMULA_NAME="starship"
+readonly STARSHIP_PACKAGE_NAME="starship"
 readonly STARSHIP_CONFIG_DIR="$HOME/.config"
 readonly STARSHIP_CONFIG_FILE="$STARSHIP_CONFIG_DIR/starship.toml"
 readonly STARSHIP_BASE_CONFIG_FILE="$starship_repo_root/config/starship.toml"
 
 ensure_starship_installed() {
-  ensure_homebrew_formula_installed "$STARSHIP_FORMULA_NAME"
+  ensure_package_installed "$STARSHIP_PACKAGE_NAME"
 }
 
 print_starship_status() {
-  print_homebrew_formula_status "$STARSHIP_FORMULA_NAME"
+  print_package_status "$STARSHIP_PACKAGE_NAME"
 }
 
 ensure_starship_base_config_present() {

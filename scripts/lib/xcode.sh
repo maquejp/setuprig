@@ -13,7 +13,7 @@ ensure_xcode_cli_installed() {
   local install_output
 
   if is_linux; then
-    ensure_linux_homebrew_prerequisites_installed
+    ensure_linux_build_prerequisites_installed
     printf 'Linux build prerequisites are installed.\n'
     return 0
   fi

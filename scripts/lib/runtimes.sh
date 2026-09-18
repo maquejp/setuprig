@@ -3,7 +3,7 @@
 runtimes_lib_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 runtimes_repo_root=$(cd -- "$runtimes_lib_dir/../.." && pwd)
 
-readonly MISE_FORMULA_NAME="mise"
+readonly MISE_PACKAGE_NAME="mise"
 readonly MISE_CONFIG_DIR="$HOME/.config/mise"
 readonly MISE_CONFIG_FILE="$MISE_CONFIG_DIR/config.toml"
 readonly MISE_BASE_CONFIG_FILE="$runtimes_repo_root/config/mise/config.toml"
@@ -13,11 +13,11 @@ readonly MISE_REQUIRED_BINARIES=(
 )
 
 ensure_mise_installed() {
-  ensure_homebrew_formula_installed "$MISE_FORMULA_NAME"
+  ensure_package_installed "$MISE_PACKAGE_NAME"
 }
 
 print_mise_status() {
-  print_homebrew_formula_status "$MISE_FORMULA_NAME"
+  print_package_status "$MISE_PACKAGE_NAME"
 }
 
 ensure_mise_base_config_present() {

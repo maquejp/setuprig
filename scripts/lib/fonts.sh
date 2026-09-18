@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-readonly JETBRAINS_MONO_CASK_NAME="font-jetbrains-mono"
 readonly JETBRAINS_MONO_APT_PACKAGE_NAME="fonts-jetbrains-mono"
 readonly JETBRAINS_MONO_REQUIRED_FILES=(
   "JetBrainsMono-Regular.ttf"
@@ -35,54 +34,33 @@ jetbrains_mono_font_present() {
 }
 
 jetbrains_mono_font_directories() {
-  if is_linux; then
-    printf '%s\n' "$HOME/.local/share/fonts" "/usr/local/share/fonts" "/usr/share/fonts"
-    return 0
-  fi
-
-  printf '%s\n' "$HOME/Library/Fonts" "/Library/Fonts"
+  printf '%s\n' "$HOME/.local/share/fonts" "/usr/local/share/fonts" "/usr/share/fonts"
 }
 
 install_jetbrains_mono() {
-  if is_linux; then
-    if apt_package_available "$JETBRAINS_MONO_APT_PACKAGE_NAME"; then
-      ensure_apt_package_installed "$JETBRAINS_MONO_APT_PACKAGE_NAME"
-      return 0
-    fi
+  ensure_apt_updated
 
-    printf 'JetBrains Mono automatic installation is not available on this Linux setup. Install it manually, then rerun this step.\n' >&2
-    exit 1
+  if apt_package_available "$JETBRAINS_MONO_APT_PACKAGE_NAME"; then
+    ensure_apt_package_installed "$JETBRAINS_MONO_APT_PACKAGE_NAME"
+    return 0
   fi
 
-  brew install --cask "$JETBRAINS_MONO_CASK_NAME"
+  printf 'JetBrains Mono automatic installation is not available from the configured Ubuntu repositories. Install it manually, then rerun this step.\n' >&2
+  exit 1
 }
 
 ensure_jetbrains_mono_installed() {
-  if ! is_linux && brew list --cask "$JETBRAINS_MONO_CASK_NAME" >/dev/null 2>&1; then
-    printf 'JetBrains Mono is already installed via Homebrew.\n'
-    return 0
-  fi
-
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono core font files already exist. Skipping Homebrew installation.\n'
+    printf 'JetBrains Mono core font files already exist. Skipping package installation.\n'
     return 0
   fi
 
-  if is_linux; then
-    printf 'JetBrains Mono is missing; installing it with apt when available.\n'
-  else
-    printf 'JetBrains Mono is missing; installing it with Homebrew.\n'
-  fi
+  printf 'JetBrains Mono is missing; installing it with apt when available.\n'
   install_jetbrains_mono
 }
 
 print_jetbrains_mono_status() {
-  if ! is_linux && brew list --cask "$JETBRAINS_MONO_CASK_NAME" >/dev/null 2>&1; then
-    printf 'JetBrains Mono is installed via Homebrew.\n'
-    return 0
-  fi
-
-  if is_linux && apt_package_installed "$JETBRAINS_MONO_APT_PACKAGE_NAME"; then
+  if apt_package_installed "$JETBRAINS_MONO_APT_PACKAGE_NAME"; then
     printf 'JetBrains Mono is installed via apt.\n'
     return 0
   fi

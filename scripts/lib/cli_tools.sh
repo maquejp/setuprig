@@ -7,50 +7,50 @@ readonly DEFAULT_CLI_TOOLS=(
 )
 
 ensure_default_cli_tools_installed() {
-  ensure_homebrew_formulae_installed "${DEFAULT_CLI_TOOLS[@]}"
+  ensure_packages_installed "${DEFAULT_CLI_TOOLS[@]}"
 }
 
 print_default_cli_tools_status() {
-  print_homebrew_formulae_status "${DEFAULT_CLI_TOOLS[@]}"
-  printf 'Default CLI tools are installed via Homebrew.\n'
+  print_packages_status "${DEFAULT_CLI_TOOLS[@]}"
+  printf 'Default CLI tools are installed.\n'
 }
 
 ensure_fzf_installed() {
-  ensure_homebrew_formula_installed "fzf"
+  ensure_package_installed "fzf"
 }
 
 print_fzf_status() {
-  print_homebrew_formula_status "fzf"
+  print_package_status "fzf"
 }
 
 ensure_fd_installed() {
-  ensure_homebrew_formula_installed "fd"
+  ensure_package_installed "fd"
 }
 
 print_fd_status() {
-  print_homebrew_formula_status "fd"
+  print_package_status "fd"
 }
 
 ensure_direnv_installed() {
-  ensure_homebrew_formula_installed "direnv"
+  ensure_package_installed "direnv"
 }
 
 print_direnv_status() {
-  print_homebrew_formula_status "direnv"
+  print_package_status "direnv"
 }
 
 ensure_tlrc_installed() {
-  ensure_homebrew_formula_installed "tlrc"
+  ensure_package_installed "tlrc"
 }
 
 print_tlrc_status() {
-  print_homebrew_formula_status "tlrc"
+  print_package_status "tlrc"
 }
 
 ensure_pnpm_installed() {
-  ensure_homebrew_formula_installed "pnpm"
+  ensure_package_installed "pnpm"
 }
 
 print_pnpm_status() {
-  print_homebrew_formula_status "pnpm"
+  print_package_status "pnpm"
 }
