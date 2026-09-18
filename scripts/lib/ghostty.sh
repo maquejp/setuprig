@@ -3,16 +3,42 @@
 ghostty_lib_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 ghostty_repo_root=$(cd -- "$ghostty_lib_dir/../.." && pwd)
 
-readonly GHOSTTY_CONFIG_DIR="$HOME/Library/Application Support/com.mitchellh.ghostty"
+if is_linux; then
+  readonly GHOSTTY_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/com.mitchellh.ghostty"
+else
+  readonly GHOSTTY_CONFIG_DIR="$HOME/Library/Application Support/com.mitchellh.ghostty"
+fi
 readonly GHOSTTY_CONFIG_FILE="$GHOSTTY_CONFIG_DIR/config.ghostty"
 readonly GHOSTTY_BASE_SETTINGS_FILE="$ghostty_repo_root/config/ghostty/base.ghostty"
 readonly GHOSTTY_APP_PATH="/Applications/Ghostty.app"
 
 install_ghostty_cask() {
+  if is_linux; then
+    printf 'Ghostty automatic installation is not currently supported on Linux. Install Ghostty manually, then rerun this step.\n' >&2
+    exit 1
+  fi
+
   brew install --cask ghostty
 }
 
+ghostty_available() {
+  if command -v ghostty >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [[ -d "$GHOSTTY_APP_PATH" ]]; then
+    return 0
+  fi
+
+  return 1
+}
+
 ensure_ghostty_installed() {
+  if is_linux && ghostty_available; then
+    printf 'Ghostty is already available on the system.\n'
+    return 0
+  fi
+
   if brew list --cask ghostty >/dev/null 2>&1; then
     printf 'Ghostty is already installed via Homebrew.\n'
     return 0
@@ -28,6 +54,11 @@ ensure_ghostty_installed() {
 }
 
 print_ghostty_status() {
+  if is_linux && ghostty_available; then
+    printf 'Ghostty is available on the system.\n'
+    return 0
+  fi
+
   if brew list --cask ghostty >/dev/null 2>&1; then
     printf 'Ghostty is installed via Homebrew.\n'
     return 0

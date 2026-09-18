@@ -163,8 +163,12 @@ run_pnpm_step() {
 
 run_all_steps() {
   run_homebrew_step
-  run_jetbrains_mono_step
-  run_ghostty_step
+
+  if is_macos; then
+    run_jetbrains_mono_step
+    run_ghostty_step
+  fi
+
   run_xcode_cli_step
   run_git_step
   run_cli_tools_step
@@ -173,7 +177,7 @@ run_all_steps() {
 }
 
 main() {
-  ensure_macos
+  ensure_supported_os
 
   if (($# != 1)); then
     usage >&2

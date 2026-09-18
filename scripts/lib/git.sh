@@ -29,7 +29,7 @@ ensure_git_installed() {
   fi
 
   printf 'Git is missing; installing it with Homebrew.\n'
-  brew install git
+  ensure_homebrew_formula_installed "git"
 }
 
 ensure_git_tooling_installed() {

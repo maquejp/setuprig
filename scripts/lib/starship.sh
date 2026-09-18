@@ -9,23 +9,11 @@ readonly STARSHIP_CONFIG_FILE="$STARSHIP_CONFIG_DIR/starship.toml"
 readonly STARSHIP_BASE_CONFIG_FILE="$starship_repo_root/config/starship.toml"
 
 ensure_starship_installed() {
-  if brew list --formula "$STARSHIP_FORMULA_NAME" >/dev/null 2>&1; then
-    printf 'Starship is already installed via Homebrew.\n'
-    return 0
-  fi
-
-  printf 'Starship is missing; installing it with Homebrew.\n'
-  brew install "$STARSHIP_FORMULA_NAME"
+  ensure_homebrew_formula_installed "$STARSHIP_FORMULA_NAME"
 }
 
 print_starship_status() {
-  if brew list --formula "$STARSHIP_FORMULA_NAME" >/dev/null 2>&1; then
-    printf 'Starship is installed via Homebrew.\n'
-    return 0
-  fi
-
-  printf 'Starship installation could not be verified.\n' >&2
-  return 1
+  print_homebrew_formula_status "$STARSHIP_FORMULA_NAME"
 }
 
 ensure_starship_base_config_present() {

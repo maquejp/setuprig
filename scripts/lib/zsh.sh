@@ -3,7 +3,6 @@
 zsh_lib_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 zsh_repo_root=$(cd -- "$zsh_lib_dir/../.." && pwd)
 
-readonly ZSH_SHELL_PATH="/bin/zsh"
 readonly ZSH_REQUIRED_FORMULAE=(
   "mise"
   "zoxide"
@@ -24,47 +23,68 @@ readonly ZSH_MANAGED_FILES=(
   "prompt.zsh"
 )
 
-ensure_zsh_present() {
-  if [[ -x "$ZSH_SHELL_PATH" ]]; then
+zsh_shell_path() {
+  if command -v zsh >/dev/null 2>&1; then
+    command -v zsh
     return 0
   fi
 
-  printf 'zsh is missing at %s.\n' "$ZSH_SHELL_PATH" >&2
+  if [[ -x /bin/zsh ]]; then
+    printf '/bin/zsh\n'
+    return 0
+  fi
+
+  return 1
+}
+
+ensure_zsh_system_package_installed() {
+  if ! is_linux; then
+    return 0
+  fi
+
+  ensure_apt_package_installed zsh
+}
+
+ensure_zsh_present() {
+  local shell_path
+
+  ensure_zsh_system_package_installed
+
+  shell_path=$(zsh_shell_path) || {
+    printf 'zsh is missing.\n' >&2
+    exit 1
+  }
+
+  if [[ -x "$shell_path" ]]; then
+    return 0
+  fi
+
+  printf 'zsh is missing at %s.\n' "$shell_path" >&2
   exit 1
 }
 
 ensure_zsh_allowed_shell() {
-  if grep -Fxq "$ZSH_SHELL_PATH" /etc/shells; then
+  local shell_path
+
+  shell_path=$(zsh_shell_path) || {
+    printf 'zsh shell path could not be determined.\n' >&2
+    exit 1
+  }
+
+  if grep -Fxq "$shell_path" /etc/shells; then
     return 0
   fi
 
-  printf 'zsh is not listed in /etc/shells: %s\n' "$ZSH_SHELL_PATH" >&2
+  printf 'zsh is not listed in /etc/shells: %s\n' "$shell_path" >&2
   exit 1
 }
 
 ensure_zsh_runtime_dependencies_installed() {
-  local formula_name
-
-  for formula_name in "${ZSH_REQUIRED_FORMULAE[@]}"; do
-    if brew list --formula "$formula_name" >/dev/null 2>&1; then
-      printf '%s is already installed via Homebrew.\n' "$formula_name"
-      continue
-    fi
-
-    printf '%s is missing; installing it with Homebrew.\n' "$formula_name"
-    brew install "$formula_name"
-  done
+  ensure_homebrew_formulae_installed "${ZSH_REQUIRED_FORMULAE[@]}"
 }
 
 print_zsh_runtime_dependency_status() {
-  local formula_name
-
-  for formula_name in "${ZSH_REQUIRED_FORMULAE[@]}"; do
-    if ! brew list --formula "$formula_name" >/dev/null 2>&1; then
-      printf 'Required zsh dependency could not be verified: %s\n' "$formula_name" >&2
-      return 1
-    fi
-  done
+  print_homebrew_formulae_status "${ZSH_REQUIRED_FORMULAE[@]}" || return 1
 
   printf 'zsh runtime dependencies are installed via Homebrew.\n'
 }
@@ -107,29 +127,44 @@ ensure_zsh_history_path() {
 }
 
 current_user_shell() {
+  if is_linux; then
+    getent passwd "$(whoami)" | cut -d: -f7
+    return 0
+  fi
+
   dscl . -read /Users/"$(whoami)" UserShell 2>/dev/null | awk '/UserShell:/ { print $2 }'
 }
 
 ensure_zsh_default_shell() {
   local configured_shell
+  local shell_path
 
+  shell_path=$(zsh_shell_path) || {
+    printf 'zsh shell path could not be determined.\n' >&2
+    exit 1
+  }
   configured_shell=$(current_user_shell)
 
-  if [[ "$configured_shell" == "$ZSH_SHELL_PATH" ]]; then
+  if [[ "$configured_shell" == "$shell_path" ]]; then
     printf 'zsh is already the default login shell.\n'
     return 0
   fi
 
-  printf 'Changing default login shell from %s to %s.\n' "$configured_shell" "$ZSH_SHELL_PATH"
-  chsh -s "$ZSH_SHELL_PATH"
+  printf 'Changing default login shell from %s to %s.\n' "$configured_shell" "$shell_path"
+  chsh -s "$shell_path"
 }
 
 print_zsh_status() {
   local configured_shell
+  local shell_path
 
+  shell_path=$(zsh_shell_path) || {
+    printf 'zsh shell path could not be determined.\n' >&2
+    return 1
+  }
   configured_shell=$(current_user_shell)
 
-  if [[ "$configured_shell" == "$ZSH_SHELL_PATH" ]]; then
+  if [[ "$configured_shell" == "$shell_path" ]]; then
     printf 'Default login shell is %s.\n' "$configured_shell"
     return 0
   fi

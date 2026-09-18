@@ -1,11 +1,22 @@
 #!/usr/bin/env bash
 
 xcode_cli_installed() {
+  if is_linux; then
+    apt_package_installed build-essential
+    return $?
+  fi
+
   xcode-select -p >/dev/null 2>&1
 }
 
 ensure_xcode_cli_installed() {
   local install_output
+
+  if is_linux; then
+    ensure_linux_homebrew_prerequisites_installed
+    printf 'Linux build prerequisites are installed.\n'
+    return 0
+  fi
 
   if xcode_cli_installed; then
     printf 'Xcode Command Line Tools are already installed.\n'
@@ -25,6 +36,12 @@ ensure_xcode_cli_installed() {
 }
 
 print_xcode_cli_status() {
+  if is_linux; then
+    print_apt_package_status build-essential || return 1
+    printf 'Linux build prerequisites are installed.\n'
+    return 0
+  fi
+
   if xcode_cli_installed; then
     printf 'Xcode Command Line Tools are installed.\n'
     return 0
