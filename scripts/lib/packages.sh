@@ -397,7 +397,7 @@ tlrc_release_asset_url() {
 
   curl -fsSL "https://api.github.com/repos/${TLRC_GITHUB_REPOSITORY}/releases/latest" \
     | tr ',' '\n' \
-    | grep -o '"browser_download_url":"[^"]*' \
+    | grep -oE '"browser_download_url":[[:space:]]*"[^"]*' \
     | cut -d'"' -f4 \
     | grep "${asset_suffix}$" \
     | head -n 1
