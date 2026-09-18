@@ -1,14 +1,31 @@
 #!/usr/bin/env bash
 
 readonly JETBRAINS_MONO_CASK_NAME="font-jetbrains-mono"
+readonly JETBRAINS_MONO_REQUIRED_FILES=(
+  "JetBrainsMono-Regular.ttf"
+  "JetBrainsMono-Bold.ttf"
+  "JetBrainsMono-Italic.ttf"
+  "JetBrainsMono-BoldItalic.ttf"
+)
 
 jetbrains_mono_font_present() {
   local font_dir
+  local required_file
+  local required_file_found
 
   for font_dir in "$HOME/Library/Fonts" "/Library/Fonts"; do
     [[ -d "$font_dir" ]] || continue
 
-    if find "$font_dir" -maxdepth 1 \( -iname 'JetBrainsMono*.ttf' -o -iname 'JetBrainsMono*.otf' -o -iname 'JetBrainsMono*.ttc' \) | grep -q .; then
+    required_file_found=1
+
+    for required_file in "${JETBRAINS_MONO_REQUIRED_FILES[@]}"; do
+      if [[ ! -f "$font_dir/$required_file" ]]; then
+        required_file_found=0
+        break
+      fi
+    done
+
+    if [[ $required_file_found -eq 1 ]]; then
       return 0
     fi
   done
@@ -27,7 +44,7 @@ ensure_jetbrains_mono_installed() {
   fi
 
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono font files already exist. Skipping Homebrew installation.\n'
+    printf 'JetBrains Mono core font files already exist. Skipping Homebrew installation.\n'
     return 0
   fi
 
@@ -42,7 +59,7 @@ print_jetbrains_mono_status() {
   fi
 
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono font files are installed.\n'
+    printf 'JetBrains Mono core font files are installed.\n'
     return 0
   fi
 

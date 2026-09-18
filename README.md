@@ -31,9 +31,9 @@ Notes:
   cask if needed and writes your base settings to
   `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`.
 - `setup.sh all` runs every currently implemented step in order.
-- If JetBrains Mono font files already exist outside Homebrew, the
-  JetBrains Mono step treats that as already installed and skips Homebrew
-  installation.
+- If the core JetBrains Mono files already exist outside Homebrew
+  (`Regular`, `Bold`, `Italic`, and `BoldItalic`), the JetBrains Mono step
+  treats that as already installed and skips Homebrew installation.
 - If `Ghostty.app` already exists in `/Applications` outside Homebrew, the
   Ghostty step treats that as already installed, skips Homebrew installation,
   and still overwrites the Ghostty config with your base settings.
