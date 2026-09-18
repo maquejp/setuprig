@@ -39,13 +39,24 @@ apply_mise_configuration() {
 }
 
 install_managed_runtimes() {
-  mise install
+  local mise_command_path
+
+  mise_command_path=$(user_local_command_path mise) || {
+    printf 'mise is installed but could not be resolved on PATH.\n' >&2
+    exit 1
+  }
+
+  "$mise_command_path" install
 }
 
 mise_binary_available() {
   local binary_name="$1"
 
-  mise which "$binary_name" >/dev/null 2>&1
+  if ! user_local_command_path mise >/dev/null 2>&1; then
+    return 1
+  fi
+
+  "$(user_local_command_path mise)" which "$binary_name" >/dev/null 2>&1
 }
 
 print_runtimes_status() {
