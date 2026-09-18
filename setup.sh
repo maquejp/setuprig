@@ -37,7 +37,7 @@ Usage: bash setup.sh <step>
 
 Available steps:
   homebrew   Ensure Homebrew is installed
-  jetbrains-mono Ensure JetBrains Mono is installed
+  jetbrains-mono Ensure JetBrains Mono Nerd Font is installed
   ghostty    Ensure Homebrew is installed, then install Ghostty
   xcode-cli  Ensure Xcode Command Line Tools are installed
   git        Ensure Git, GitHub CLI, and delta are installed and configured

@@ -5,7 +5,7 @@ This repo is being built step by step for macOS.
 Current steps:
 
 1. Ensure Homebrew is installed.
-2. Ensure JetBrains Mono is installed.
+2. Ensure JetBrains Mono Nerd Font is installed.
 3. Ensure Ghostty is installed with Homebrew and apply the base Ghostty
   settings.
 4. Ensure Xcode Command Line Tools are installed.
@@ -43,7 +43,7 @@ Notes:
 
 - `setup.sh homebrew` ensures Homebrew is present.
 - `setup.sh jetbrains-mono` ensures Homebrew is present, then installs the
-  `font-jetbrains-mono` cask if needed.
+  `font-jetbrains-mono-nerd-font` cask if needed.
 - `setup.sh ghostty` ensures Homebrew is present, then installs the `ghostty`
   cask if needed and writes your base settings to
   `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`.
@@ -76,9 +76,9 @@ Notes:
   `setup.sh all`.
 - `setup.sh all` runs every default step in order and excludes the optional
   explicit-request installs.
-- If the core JetBrains Mono files already exist outside Homebrew
-  (`Regular`, `Bold`, `Italic`, and `BoldItalic`), the JetBrains Mono step
-  treats that as already installed and skips Homebrew installation.
+- If the JetBrains Mono Nerd Font Mono files already exist outside Homebrew
+  (`Regular`, `Bold`, `Italic`, and `BoldItalic`), the JetBrains Mono Nerd
+  Font step treats that as already installed and skips Homebrew installation.
 - If `Ghostty.app` already exists in `/Applications` outside Homebrew, the
   Ghostty step treats that as already installed, skips Homebrew installation,
   and still overwrites the Ghostty config with your base settings.
