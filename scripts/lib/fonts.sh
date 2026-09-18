@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-readonly JETBRAINS_MONO_CASK_NAME="font-jetbrains-mono"
+readonly JETBRAINS_MONO_CASK_NAME="font-jetbrains-mono-nerd-font"
 readonly JETBRAINS_MONO_REQUIRED_FILES=(
-  "JetBrainsMono-Regular.ttf"
-  "JetBrainsMono-Bold.ttf"
-  "JetBrainsMono-Italic.ttf"
-  "JetBrainsMono-BoldItalic.ttf"
+  "JetBrainsMonoNerdFontMono-Regular.ttf"
+  "JetBrainsMonoNerdFontMono-Bold.ttf"
+  "JetBrainsMonoNerdFontMono-Italic.ttf"
+  "JetBrainsMonoNerdFontMono-BoldItalic.ttf"
 )
 
 jetbrains_mono_font_present() {
@@ -39,30 +39,30 @@ install_jetbrains_mono() {
 
 ensure_jetbrains_mono_installed() {
   if brew list --cask "$JETBRAINS_MONO_CASK_NAME" >/dev/null 2>&1; then
-    printf 'JetBrains Mono is already installed via Homebrew.\n'
+    printf 'JetBrains Mono Nerd Font is already installed via Homebrew.\n'
     return 0
   fi
 
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono core font files already exist. Skipping Homebrew installation.\n'
+    printf 'JetBrains Mono Nerd Font files already exist. Skipping Homebrew installation.\n'
     return 0
   fi
 
-  printf 'JetBrains Mono is missing; installing it with Homebrew.\n'
+  printf 'JetBrains Mono Nerd Font is missing; installing it with Homebrew.\n'
   install_jetbrains_mono
 }
 
 print_jetbrains_mono_status() {
   if brew list --cask "$JETBRAINS_MONO_CASK_NAME" >/dev/null 2>&1; then
-    printf 'JetBrains Mono is installed via Homebrew.\n'
+    printf 'JetBrains Mono Nerd Font is installed via Homebrew.\n'
     return 0
   fi
 
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono core font files are installed.\n'
+    printf 'JetBrains Mono Nerd Font files are installed.\n'
     return 0
   fi
 
-  printf 'JetBrains Mono installation could not be verified.\n' >&2
+  printf 'JetBrains Mono Nerd Font installation could not be verified.\n' >&2
   return 1
 }
