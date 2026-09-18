@@ -1,75 +1,49 @@
 #!/usr/bin/env bash
 
-readonly JETBRAINS_MONO_APT_PACKAGE_NAME="fonts-jetbrains-mono"
-readonly JETBRAINS_MONO_REQUIRED_FILES=(
-  "JetBrainsMono-Regular.ttf"
-  "JetBrainsMono-Bold.ttf"
-  "JetBrainsMono-Italic.ttf"
-  "JetBrainsMono-BoldItalic.ttf"
-)
+readonly JETBRAINS_MONO_NERD_FONT_NAME="JetBrainsMono Nerd Font"
+readonly JETBRAINS_MONO_NERD_FONT_RELEASE_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+readonly JETBRAINS_MONO_FONT_DIR="$HOME/.local/share/fonts"
 
 jetbrains_mono_font_present() {
-  local font_dir
-  local required_file
-  local required_file_found
-
-  while IFS= read -r font_dir; do
-    [[ -d "$font_dir" ]] || continue
-
-    required_file_found=1
-
-    for required_file in "${JETBRAINS_MONO_REQUIRED_FILES[@]}"; do
-      if ! find "$font_dir" -type f -name "$required_file" -print -quit | grep -q .; then
-        required_file_found=0
-        break
-      fi
-    done
-
-    if [[ $required_file_found -eq 1 ]]; then
-      return 0
-    fi
-  done < <(jetbrains_mono_font_directories)
-
-  return 1
-}
-
-jetbrains_mono_font_directories() {
-  printf '%s\n' "$HOME/.local/share/fonts" "/usr/local/share/fonts" "/usr/share/fonts"
+  fc-match -f '%{family}\n' "$JETBRAINS_MONO_NERD_FONT_NAME" 2>/dev/null | grep -Fxq "$JETBRAINS_MONO_NERD_FONT_NAME"
 }
 
 install_jetbrains_mono() {
-  ensure_apt_updated
+  local temp_dir
 
-  if apt_package_available "$JETBRAINS_MONO_APT_PACKAGE_NAME"; then
-    ensure_apt_package_installed "$JETBRAINS_MONO_APT_PACKAGE_NAME"
+  if jetbrains_mono_font_present; then
     return 0
   fi
 
-  printf 'JetBrains Mono automatic installation is not available from the configured Ubuntu repositories. Install it manually, then rerun this step.\n' >&2
-  exit 1
+  temp_dir=$(mktemp -d)
+  trap 'rm -rf "$temp_dir"' RETURN
+
+  mkdir -p "$JETBRAINS_MONO_FONT_DIR"
+  curl -fsSL "$JETBRAINS_MONO_NERD_FONT_RELEASE_URL" -o "$temp_dir/JetBrainsMono.tar.xz"
+  tar -xf "$temp_dir/JetBrainsMono.tar.xz" -C "$temp_dir"
+  find "$temp_dir" -type f \( -name '*.ttf' -o -name '*.otf' \) -exec cp -f {} "$JETBRAINS_MONO_FONT_DIR"/ \;
+
+  if command -v fc-cache >/dev/null 2>&1; then
+    fc-cache -f "$JETBRAINS_MONO_FONT_DIR" >/dev/null 2>&1 || true
+  fi
 }
 
 ensure_jetbrains_mono_installed() {
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono core font files already exist. Skipping package installation.\n'
+    printf 'JetBrains Mono Nerd Font is already installed.\n'
     return 0
   fi
 
-  printf 'JetBrains Mono is missing; installing it with apt when available.\n'
+  printf 'JetBrains Mono Nerd Font is missing; installing the Nerd Font release.\n'
   install_jetbrains_mono
 }
 
 print_jetbrains_mono_status() {
-  if apt_package_installed "$JETBRAINS_MONO_APT_PACKAGE_NAME"; then
-    printf 'JetBrains Mono is installed via apt.\n'
-    return 0
-  fi
-
   if jetbrains_mono_font_present; then
-    printf 'JetBrains Mono core font files are installed.\n'
+    printf 'JetBrains Mono Nerd Font is installed.\n'
     return 0
   fi
 
-  printf 'JetBrains Mono installation could not be verified.\n' >&2
+  printf 'JetBrains Mono Nerd Font installation could not be verified.\n' >&2
   return 1
 }

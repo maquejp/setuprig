@@ -40,9 +40,8 @@ Notes:
 
 - `setup.sh build-tools` installs the Ubuntu build prerequisites required by
   the rest of the developer tooling.
-- `setup.sh jetbrains-mono` installs JetBrains Mono from Ubuntu repositories
-  when the `fonts-jetbrains-mono` package is available and otherwise asks you
-  to install the font manually.
+- `setup.sh jetbrains-mono` installs the JetBrainsMono Nerd Font release so
+  `eza --icons` and similar tools can render file and folder glyphs in Ghostty.
 - `setup.sh ghostty` installs and configures Ghostty. The config is written to
   the XDG Ghostty config path. On Ubuntu it tries the `ghostty` apt package
   when the repositories provide it. If the package is not available, install
@@ -78,9 +77,8 @@ Notes:
   installs pnpm with npm through `mise` when Ubuntu does not provide a package.
 - `setup.sh all` runs every default step in order and excludes the optional
   explicit-request installs.
-- If the core JetBrains Mono files already exist
-  (`Regular`, `Bold`, `Italic`, and `BoldItalic`), the JetBrains Mono step
-  treats that as already installed and skips package installation.
+- If the JetBrainsMono Nerd Font is already present, the font step treats that
+  as already installed and skips the download.
 - Ghostty config is written to
   `${XDG_CONFIG_HOME:-~/.config}/com.mitchellh.ghostty/config.ghostty`.
 - According to the official Ghostty binary installation docs, Ubuntu 26.04+
