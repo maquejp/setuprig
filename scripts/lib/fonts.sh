@@ -3,25 +3,24 @@
 readonly JETBRAINS_MONO_NERD_FONT_NAME="JetBrainsMono Nerd Font"
 readonly JETBRAINS_MONO_NERD_FONT_RELEASE_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
 readonly JETBRAINS_MONO_FONT_DIR="$HOME/.local/share/fonts"
+JETBRAINS_MONO_TEMP_DIR=""
 
 jetbrains_mono_font_present() {
   fc-match -f '%{family}\n' "$JETBRAINS_MONO_NERD_FONT_NAME" 2>/dev/null | grep -Fxq "$JETBRAINS_MONO_NERD_FONT_NAME"
 }
 
 install_jetbrains_mono() {
-  local temp_dir
-
   if jetbrains_mono_font_present; then
     return 0
   fi
 
-  temp_dir=$(mktemp -d)
-  trap 'rm -rf "$temp_dir"' RETURN
+  JETBRAINS_MONO_TEMP_DIR=$(mktemp -d)
+  trap 'rm -rf "$JETBRAINS_MONO_TEMP_DIR"' RETURN
 
   mkdir -p "$JETBRAINS_MONO_FONT_DIR"
-  curl -fsSL "$JETBRAINS_MONO_NERD_FONT_RELEASE_URL" -o "$temp_dir/JetBrainsMono.tar.xz"
-  tar -xf "$temp_dir/JetBrainsMono.tar.xz" -C "$temp_dir"
-  find "$temp_dir" -type f \( -name '*.ttf' -o -name '*.otf' \) -exec cp -f {} "$JETBRAINS_MONO_FONT_DIR"/ \;
+  curl -fsSL "$JETBRAINS_MONO_NERD_FONT_RELEASE_URL" -o "$JETBRAINS_MONO_TEMP_DIR/JetBrainsMono.tar.xz"
+  tar -xf "$JETBRAINS_MONO_TEMP_DIR/JetBrainsMono.tar.xz" -C "$JETBRAINS_MONO_TEMP_DIR"
+  find "$JETBRAINS_MONO_TEMP_DIR" -type f \( -name '*.ttf' -o -name '*.otf' \) -exec cp -f {} "$JETBRAINS_MONO_FONT_DIR"/ \;
 
   if command -v fc-cache >/dev/null 2>&1; then
     fc-cache -f "$JETBRAINS_MONO_FONT_DIR" >/dev/null 2>&1 || true
