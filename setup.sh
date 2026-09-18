@@ -13,6 +13,9 @@ source "$script_dir/scripts/lib/fonts.sh"
 # shellcheck source=./scripts/lib/ghostty.sh
 source "$script_dir/scripts/lib/ghostty.sh"
 
+# shellcheck source=./scripts/lib/starship.sh
+source "$script_dir/scripts/lib/starship.sh"
+
 # shellcheck source=./scripts/lib/zsh.sh
 source "$script_dir/scripts/lib/zsh.sh"
 
@@ -50,9 +53,17 @@ run_ghostty_step() {
 }
 
 run_zsh_step() {
+  ensure_homebrew_installed
+  setup_homebrew_environment
+  ensure_starship_installed
+  ensure_zsh_runtime_dependencies_installed
   ensure_zsh_present
   ensure_zsh_allowed_shell
   ensure_zsh_default_shell
+  apply_starship_configuration
+  apply_zsh_base_configuration
+  print_starship_status
+  print_zsh_runtime_dependency_status
   print_zsh_status
 }
 

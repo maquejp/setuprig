@@ -1,0 +1,81 @@
+# Starship configuration
+
+command_timeout = 500
+scan_timeout = 30
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$cmd_duration\
+$line_break\
+$character\
+"""
+
+[directory]
+truncation_length = 2
+truncate_to_repo = false
+format = "[$path]($style) "
+style = "bold cyan"
+
+[git_branch]
+symbol = "🌱 "
+format = "on [$symbol$branch]($style) "
+style = "bold purple"
+truncation_length = 20
+truncation_symbol = "…"
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+style = "bold red"
+conflicted = "🏳${count}"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "🤷${count}"
+stashed = "📦${count} "
+modified = "📝${count}"
+staged = '[++\($count\)](green)'
+renamed = "👅${count}"
+deleted = "🗑${count}"
+
+[nodejs]
+symbol = "⬢ "
+format = "via [$symbol($version )]($style)"
+style = "bold green"
+disabled = false
+detect_extensions = ["js", "mjs", "cjs", "ts", "mts", "cts"]
+detect_files = ["package.json", ".node-version"]
+detect_folders = ["node_modules"]
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration]($style) "
+style = "bold yellow"
+show_milliseconds = false
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[package]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[azure]
+disabled = true
+
+[username]
+disabled = true
+
+[hostname]
+disabled = true
+
+[env_var]
+disabled = true

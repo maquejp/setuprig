@@ -33,7 +33,11 @@ Notes:
   cask if needed and writes your base settings to
   `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`.
 - `setup.sh zsh` ensures `/bin/zsh` exists, ensures it is allowed as a login
-  shell, and makes it the default login shell when needed.
+  shell, installs `starship`, `mise`, `zoxide`, `eza`, `bat`, `ripgrep`, and
+  `openssl@3` with Homebrew when needed, makes zsh the default login shell
+  when needed, syncs the repo zsh files into `~/.config/zsh`, synchronizes
+  `~/.config/starship.toml`, writes a minimal `~/.zshenv` shim, and ensures
+  history is stored at `~/.local/state/zsh/history`.
 - `setup.sh all` runs every currently implemented step in order.
 - If the core JetBrains Mono files already exist outside Homebrew
   (`Regular`, `Bold`, `Italic`, and `BoldItalic`), the JetBrains Mono step
