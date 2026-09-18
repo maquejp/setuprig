@@ -8,10 +8,11 @@ Current steps:
 2. Ensure JetBrains Mono is installed.
 3. Ensure Ghostty is installed with Homebrew and apply the base Ghostty
   settings.
+4. Ensure zsh is present and the default login shell.
 
 Current scope stops at Homebrew, JetBrains Mono, Ghostty installation, and
-your base Ghostty settings. Nothing here configures zsh, defaults, or any
-later setup until you ask for the next step.
+your base Ghostty settings plus the login shell. Nothing here configures other
+defaults or any later setup until you ask for the next step.
 
 Usage:
 
@@ -19,6 +20,7 @@ Usage:
 bash setup.sh homebrew
 bash setup.sh jetbrains-mono
 bash setup.sh ghostty
+bash setup.sh zsh
 bash setup.sh all
 ```
 
@@ -30,6 +32,8 @@ Notes:
 - `setup.sh ghostty` ensures Homebrew is present, then installs the `ghostty`
   cask if needed and writes your base settings to
   `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`.
+- `setup.sh zsh` ensures `/bin/zsh` exists, ensures it is allowed as a login
+  shell, and makes it the default login shell when needed.
 - `setup.sh all` runs every currently implemented step in order.
 - If the core JetBrains Mono files already exist outside Homebrew
   (`Regular`, `Bold`, `Italic`, and `BoldItalic`), the JetBrains Mono step

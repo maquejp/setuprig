@@ -13,6 +13,9 @@ source "$script_dir/scripts/lib/fonts.sh"
 # shellcheck source=./scripts/lib/ghostty.sh
 source "$script_dir/scripts/lib/ghostty.sh"
 
+# shellcheck source=./scripts/lib/zsh.sh
+source "$script_dir/scripts/lib/zsh.sh"
+
 usage() {
   cat <<'EOF'
 Usage: bash setup.sh <step>
@@ -21,6 +24,7 @@ Available steps:
   homebrew   Ensure Homebrew is installed
   jetbrains-mono Ensure JetBrains Mono is installed
   ghostty    Ensure Homebrew is installed, then install Ghostty
+  zsh        Ensure zsh is present and the default login shell
   all        Run all currently implemented steps
 EOF
 }
@@ -45,10 +49,18 @@ run_ghostty_step() {
   print_ghostty_status
 }
 
+run_zsh_step() {
+  ensure_zsh_present
+  ensure_zsh_allowed_shell
+  ensure_zsh_default_shell
+  print_zsh_status
+}
+
 run_all_steps() {
   run_homebrew_step
   run_jetbrains_mono_step
   run_ghostty_step
+  run_zsh_step
 }
 
 main() {
@@ -68,6 +80,9 @@ main() {
       ;;
     ghostty)
       run_ghostty_step
+      ;;
+    zsh)
+      run_zsh_step
       ;;
     all)
       run_all_steps
