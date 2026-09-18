@@ -7,7 +7,7 @@ readonly MISE_FORMULA_NAME="mise"
 readonly MISE_CONFIG_DIR="$HOME/.config/mise"
 readonly MISE_CONFIG_FILE="$MISE_CONFIG_DIR/config.toml"
 readonly MISE_BASE_CONFIG_FILE="$runtimes_repo_root/config/mise/config.toml"
-readonly MISE_REQUIRED_TOOLS=(
+readonly MISE_REQUIRED_BINARIES=(
   "node"
   "python"
 )
@@ -42,20 +42,20 @@ install_managed_runtimes() {
   mise install
 }
 
-mise_tool_installed() {
-  local tool_name="$1"
+mise_binary_available() {
+  local binary_name="$1"
 
-  mise ls --global --installed "$tool_name" 2>/dev/null | awk 'NR > 1 && NF { found = 1 } END { exit found ? 0 : 1 }'
+  mise which "$binary_name" >/dev/null 2>&1
 }
 
 print_runtimes_status() {
-  local tool_name
+  local binary_name
 
   print_mise_status || return 1
 
-  for tool_name in "${MISE_REQUIRED_TOOLS[@]}"; do
-    if ! mise_tool_installed "$tool_name"; then
-      printf 'Managed runtime could not be verified with mise: %s\n' "$tool_name" >&2
+  for binary_name in "${MISE_REQUIRED_BINARIES[@]}"; do
+    if ! mise_binary_available "$binary_name"; then
+      printf 'Managed runtime could not be verified with mise: %s\n' "$binary_name" >&2
       return 1
     fi
   done
