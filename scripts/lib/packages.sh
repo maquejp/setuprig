@@ -117,6 +117,12 @@ ensure_linux_command_compatibility() {
         shim_target=$(command -v fdfind)
       fi
       ;;
+    tlrc)
+      shim_name="tlrc"
+      if ! command -v tlrc >/dev/null 2>&1 && command -v tldr >/dev/null 2>&1; then
+        shim_target=$(command -v tldr)
+      fi
+      ;;
   esac
 
   if [[ -z "$shim_name" || -z "$shim_target" ]]; then
@@ -148,6 +154,14 @@ package_installed() {
       if [[ -n "$node_bin_dir" && -x "$node_bin_dir/pnpm" ]]; then
         return 0
       fi
+    fi
+
+    return 1
+  fi
+
+  if [[ "$tool_name" == "tlrc" ]]; then
+    if command -v tlrc >/dev/null 2>&1 || command -v tldr >/dev/null 2>&1; then
+      return 0
     fi
 
     return 1
@@ -218,12 +232,20 @@ install_package() {
       return 0
     fi
 
+    if command -v tldr >/dev/null 2>&1; then
+      ensure_linux_command_compatibility tlrc
+      printf 'tlrc is already available on the system at %s.\n' "$(command -v tldr)"
+      return 0
+    fi
+
     if apt_package_available tlrc; then
       ensure_apt_package_installed tlrc
+      ensure_linux_command_compatibility tlrc
       return 0
     fi
 
     install_tlrc_release_package
+    ensure_linux_command_compatibility tlrc
     return 0
   fi
 
@@ -271,6 +293,11 @@ print_package_status() {
   if [[ "$tool_name" == "tlrc" ]]; then
     if command -v tlrc >/dev/null 2>&1; then
       printf 'tlrc is installed at %s.\n' "$(command -v tlrc)"
+      return 0
+    fi
+
+    if command -v tldr >/dev/null 2>&1; then
+      printf 'tlrc is installed at %s.\n' "$(command -v tldr)"
       return 0
     fi
 
