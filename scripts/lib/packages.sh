@@ -131,6 +131,11 @@ package_installed() {
   local tool_name="$1"
   local package_name
 
+  if [[ "$tool_name" == "mise" ]]; then
+    command -v mise >/dev/null 2>&1
+    return $?
+  fi
+
   package_name=$(preferred_apt_package_name "$tool_name")
   apt_package_installed "$package_name"
 }
@@ -148,6 +153,23 @@ install_package() {
   local tool_name="$1"
   local package_name
 
+  if [[ "$tool_name" == "mise" ]]; then
+    if command -v mise >/dev/null 2>&1; then
+      printf 'mise is already available on the system at %s.\n' "$(command -v mise)"
+      return 0
+    fi
+
+    if apt_package_available mise; then
+      ensure_apt_package_installed mise
+      return 0
+    fi
+
+    printf 'mise is missing; installing it with the official installer.\n'
+    env PATH="$HOME/.local/bin:$PATH" sh -c 'curl -fsSL https://mise.run | sh'
+    export PATH="$HOME/.local/bin:$PATH"
+    return 0
+  fi
+
   package_name=$(preferred_apt_package_name "$tool_name")
   ensure_apt_package_installed "$package_name"
   ensure_linux_command_compatibility "$tool_name"
@@ -156,6 +178,16 @@ install_package() {
 print_package_status() {
   local tool_name="$1"
   local package_name
+
+  if [[ "$tool_name" == "mise" ]]; then
+    if command -v mise >/dev/null 2>&1; then
+      printf 'mise is installed at %s.\n' "$(command -v mise)"
+      return 0
+    fi
+
+    printf 'mise could not be verified on PATH.\n' >&2
+    return 1
+  fi
 
   package_name=$(preferred_apt_package_name "$tool_name")
 
@@ -212,6 +244,11 @@ ensure_linux_build_prerequisites_installed() {
 
 ensure_package_installed() {
   local tool_name="$1"
+
+  if [[ "$tool_name" == "mise" ]]; then
+    install_package "$tool_name"
+    return 0
+  fi
 
   if package_available "$tool_name"; then
     install_package "$tool_name"

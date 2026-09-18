@@ -55,14 +55,15 @@ Notes:
 - `setup.sh cli-tools` ensures the build prerequisites are present, then
   installs the default CLI tools: `jq`, `yq`, and `tmux` with `apt`.
 - `setup.sh runtimes` ensures the build prerequisites are present, ensures
-  `mise` is installed using `apt` when available, synchronizes
-  synchronizes
+  `mise` is installed using `apt` when available or the official installer
+  otherwise, synchronizes
   `~/.config/mise/config.toml`, and installs the managed runtime baseline:
   Node LTS and Python 3. `npm` remains the default Node package manager.
 - `setup.sh zsh` ensures `zsh` is present, ensures it is allowed as a login
-  shell, installs `starship`, `mise`, `zoxide`, `eza`, `bat`, `ripgrep`, and
-  `openssl` from `apt`, makes zsh the default login shell when needed,
-  syncs the repo zsh files into `~/.config/zsh`, synchronizes
+  shell, installs `starship`, `zoxide`, `eza`, `bat`, `ripgrep`, and
+  `openssl` from `apt`, installs `mise` with the official installer when the
+  Ubuntu repositories do not provide it, makes zsh the default login shell when needed,
+  syncs the repo zsh files into `~/.config/zsh`, and synchronizes
   `~/.config/starship.toml`, writes a minimal `~/.zshenv` shim, and ensures
   history is stored at `~/.local/state/zsh/history`.
 - The aliases in `config/zsh/aliases.zsh` include Podman-oriented container
