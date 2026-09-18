@@ -49,6 +49,52 @@ ensure_homebrew_installed() {
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
+homebrew_formula_installed() {
+  local formula_name="$1"
+
+  brew list --formula "$formula_name" >/dev/null 2>&1
+}
+
+ensure_homebrew_formula_installed() {
+  local formula_name="$1"
+
+  if homebrew_formula_installed "$formula_name"; then
+    printf '%s is already installed via Homebrew.\n' "$formula_name"
+    return 0
+  fi
+
+  printf '%s is missing; installing it with Homebrew.\n' "$formula_name"
+  brew install "$formula_name"
+}
+
+ensure_homebrew_formulae_installed() {
+  local formula_name
+
+  for formula_name in "$@"; do
+    ensure_homebrew_formula_installed "$formula_name"
+  done
+}
+
+print_homebrew_formula_status() {
+  local formula_name="$1"
+
+  if homebrew_formula_installed "$formula_name"; then
+    printf '%s is installed via Homebrew.\n' "$formula_name"
+    return 0
+  fi
+
+  printf 'Homebrew formula could not be verified: %s\n' "$formula_name" >&2
+  return 1
+}
+
+print_homebrew_formulae_status() {
+  local formula_name
+
+  for formula_name in "$@"; do
+    print_homebrew_formula_status "$formula_name" || return 1
+  done
+}
+
 print_homebrew_version() {
   local brew_bin
   brew_bin=$(brew_bin_path) || {
