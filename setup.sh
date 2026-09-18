@@ -129,6 +129,9 @@ run_tlrc_step() {
 
 run_pnpm_step() {
   ensure_xcode_cli_installed
+  ensure_mise_installed
+  apply_mise_configuration
+  install_managed_runtimes
   ensure_pnpm_installed
   print_pnpm_status
 }
