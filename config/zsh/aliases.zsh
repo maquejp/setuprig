@@ -92,6 +92,5 @@ alias ns='npm start'
 alias nt='npm test'
 
 # === DIRECTORIES ===
-alias dev='cd ~/Developer'
-alias proj='cd ~/Developer/Projects'
+alias proj='cd ~/Projects'
 alias config='cd ~/.config'

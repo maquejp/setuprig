@@ -68,6 +68,9 @@ Notes:
   when needed, syncs the repo zsh files into `~/.config/zsh`, synchronizes
   `~/.config/starship.toml`, writes a minimal `~/.zshenv` shim, and ensures
   history is stored at `~/.local/state/zsh/history`.
+- The aliases in `config/zsh/aliases.zsh` include Podman-oriented container
+  shortcuts such as `d`, `dc`, and `dps`. They are aliases for `podman`, not
+  for Docker, and the repo does not currently install Podman or Docker for you.
 - `setup.sh fzf`, `setup.sh fd`, `setup.sh direnv`, `setup.sh tlrc`, and
   `setup.sh pnpm` are optional explicit-request installs. They are not part of
   `setup.sh all`.
