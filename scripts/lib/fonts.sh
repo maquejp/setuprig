@@ -6,7 +6,7 @@ readonly JETBRAINS_MONO_FONT_DIR="$HOME/.local/share/fonts"
 JETBRAINS_MONO_TEMP_DIR=""
 
 jetbrains_mono_font_present() {
-  fc-match -f '%{family}\n' "$JETBRAINS_MONO_NERD_FONT_NAME" 2>/dev/null | grep -Fxq "$JETBRAINS_MONO_NERD_FONT_NAME"
+  fc-match -f '%{family}\n' "$JETBRAINS_MONO_NERD_FONT_NAME" 2>/dev/null | grep -Fq "$JETBRAINS_MONO_NERD_FONT_NAME"
 }
 
 install_jetbrains_mono() {
