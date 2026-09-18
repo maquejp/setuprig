@@ -53,3 +53,11 @@ Ghostty base settings source:
 - The Ghostty step overwrites
   `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty` with the
   exact contents of that file.
+
+zsh and Starship config sources:
+
+- `config/zsh/.zshenv`, `config/zsh/.zshrc`, `config/zsh/aliases.zsh`, and
+  `config/zsh/prompt.zsh` are the source files synchronized into
+  `~/.config/zsh` by the zsh step.
+- `config/starship.toml` is the source file synchronized into
+  `~/.config/starship.toml` by the zsh step.
